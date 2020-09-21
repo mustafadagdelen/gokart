@@ -10,11 +10,11 @@ func TestRateCouponIsApplicableForValidParameters(t *testing.T) {
 	rate := int(30)
 	couponCode := "TEST-COUPON"
 	finishDate := time.Now().AddDate(0, 0, 10)
-	f := RateCoupon{minPurchaseAmount, rate, couponCode, finishDate}
+	r := RateCoupon{minPurchaseAmount, rate, couponCode, finishDate}
 
 	totalCartAmount := float64(200)
 
-	if f.IsApplicable(totalCartAmount) == false {
+	if r.IsApplicable(totalCartAmount) == false {
 		t.Errorf("Coupon did not work properly")
 	}
 }
@@ -24,11 +24,11 @@ func TestRateCouponIsApplicableForInValidMinPurchaseAmout(t *testing.T) {
 	rate := int(20)
 	couponCode := "TEST-COUPON"
 	finishDate := time.Now().AddDate(0, 0, 40)
-	f := RateCoupon{minPurchaseAmount, rate, couponCode, finishDate}
+	r := RateCoupon{minPurchaseAmount, rate, couponCode, finishDate}
 
 	totalCartAmount := float64(100)
 
-	if f.IsApplicable(totalCartAmount) == true {
+	if r.IsApplicable(totalCartAmount) == true {
 		t.Errorf("Total cart amount should greater then min purchase amount")
 	}
 }
@@ -38,19 +38,19 @@ func TestRateCouponIsApplicableForInValidDateParameters(t *testing.T) {
 	rate := int(20)
 	couponCode := "TEST-COUPON"
 	finishDate := time.Now().AddDate(0, 0, -10)
-	f := RateCoupon{minPurchaseAmount, rate, couponCode, finishDate}
+	r := RateCoupon{minPurchaseAmount, rate, couponCode, finishDate}
 
 	totalCartAmount := float64(100)
 
-	if f.IsApplicable(totalCartAmount) == true {
+	if r.IsApplicable(totalCartAmount) == true {
 		t.Errorf("Total cart amount should greater then min purchase amount")
 	}
 }
 
 func TestRateCouponApplyDiscountForValidParameters(t *testing.T) {
-	f := RateCoupon{MinPurchaseAmount: 100, Rate: 20, CouponCode: "TEST-COUPON", FinishDate: time.Now().AddDate(0, 0, 10)}
+	r := RateCoupon{MinPurchaseAmount: 100, Rate: 20, CouponCode: "TEST-COUPON", FinishDate: time.Now().AddDate(0, 0, 10)}
 
-	priceAfterDiscountApply := f.ApplyDiscount(200)
+	priceAfterDiscountApply := r.ApplyDiscount(200)
 
 	expected := float64(160)
 
@@ -60,12 +60,26 @@ func TestRateCouponApplyDiscountForValidParameters(t *testing.T) {
 }
 
 func TestRateCouponApplyDiscountForInValidParameters(t *testing.T) {
-	f := RateCoupon{MinPurchaseAmount: 100, Rate: 20, CouponCode: "TEST-COUPON", FinishDate: time.Now().AddDate(0, 0, 10)}
+	r := RateCoupon{MinPurchaseAmount: 100, Rate: 20, CouponCode: "TEST-COUPON", FinishDate: time.Now().AddDate(0, 0, 10)}
 
 	totalCartAmount := float64(100)
-	priceAfterDiscountApply := f.ApplyDiscount(totalCartAmount)
+	priceAfterDiscountApply := r.ApplyDiscount(totalCartAmount)
 
 	if priceAfterDiscountApply != totalCartAmount {
 		t.Errorf("Rate coupon implementation is wrong. Expected : %b . But found %b", totalCartAmount, priceAfterDiscountApply)
+	}
+}
+
+func TestRateCouponGetCouponCode(t *testing.T) {
+	minPurchaseAmount := float64(0)
+	rate := int(30)
+	couponCode := "TEST-COUPON"
+	finishDate := time.Now().AddDate(0, 0, 10)
+	r := RateCoupon{minPurchaseAmount, rate, couponCode, finishDate}
+
+	rCode := r.GetCouponCode()
+
+	if rCode != couponCode {
+		t.Error("Rate coupon GetCouponCode returned wrong result")
 	}
 }
