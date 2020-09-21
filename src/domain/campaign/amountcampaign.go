@@ -25,7 +25,7 @@ func (amountCampaign AmountCampaign) ApplyDiscount(amount float64, productQuanti
 
 func (amountCampaign AmountCampaign) GetDiscountAmount(totalAmount float64, productQuantity int) float64 {
 	if amountCampaign.IsApplicable(productQuantity) {
-		return totalAmount
+		return amountCampaign.Amount
 	}
 
 	return 0

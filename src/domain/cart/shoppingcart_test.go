@@ -1,6 +1,7 @@
 package cart
 
 import (
+	"gokart/domain/campaign"
 	catalog "gokart/domain/catalog"
 	coupon "gokart/domain/coupon"
 	"os"
@@ -275,21 +276,26 @@ func createSampleData() {
 		schoolCategory    = catalog.NewCategory("School")
 		bookCategory      = catalog.NewCategory("Books")
 		storyBookCategory = catalog.NewCategory("Story Books")
-		product1          = catalog.NewProduct("Gulliver`s Travels", 34.4, storyBookCategory)
-		quantity1         = 10
+		quantity          = 1
 
 		smartDeviceCategory = catalog.NewCategory("Smart Devices")
 		laptopCategory      = catalog.NewCategory("Laptop")
-		product2            = catalog.NewProduct("Lenovo ThinkPad ", 25, laptopCategory)
-		quantity2           = 10
+		product2            = catalog.NewProduct("Lenovo ThinkPad ", 7000, laptopCategory)
+		amountCampaign      = campaign.AmountCampaign{MinProductQuantity: 1, Amount: 20, CampaignCode: "TEST-AMOUNT-CAMPAIGN", FinishDate: time.Now().AddDate(0, 0, 10)}
+
+		amountCoupon = coupon.AmountCoupon{MinPurchaseAmount: 100, Amount: 20, CouponCode: "TEST-COUPON", FinishDate: time.Now().AddDate(0, 0, 40)}
 	)
 
 	bookCategory.SetParentCategory(schoolCategory)
 	storyBookCategory.SetParentCategory(bookCategory)
 	laptopCategory.SetParentCategory(smartDeviceCategory)
+	laptopCategory.AddCampaign(amountCampaign)
 
-	shoppingCart.AddProduct(product1, quantity1)
-	shoppingCart.AddProduct(product2, quantity2)
+	product1 := catalog.NewProduct("Gulliver`s Travels", 35, storyBookCategory)
+	shoppingCart.AddProduct(product1, quantity)
+	shoppingCart.AddProduct(product2, quantity)
+
+	shoppingCart.AddCoupon(amountCoupon)
 }
 
 func TestFindCategoryProducts(t *testing.T) {
@@ -330,8 +336,17 @@ func TestFindCategoryProducts(t *testing.T) {
 
 func TestGetCampaignDiscountAmountOfEmptyProducts(t *testing.T) {
 	var products []catalog.Product
+	amount := shoppingCart.CalculateAmountOfGivenProducts(products)
+	expected := float64(0)
 
+	if amount != expected {
+		t.Errorf("Method should return %v. But found : %v", expected, amount)
+	}
+}
+
+func TestCalculateAmountOfGivenProducts(t *testing.T) {
 	var (
+		products          []catalog.Product
 		storyBookCategory = catalog.NewCategory("Story Books")
 		product1          = catalog.NewProduct("Gulliver`s Travels", 34.4, storyBookCategory)
 		quantity          = 1
@@ -354,15 +369,18 @@ func TestGetCampaignDiscountAmountOfEmptyProducts(t *testing.T) {
 }
 
 func TestGetCampaignDiscountAmount(t *testing.T) {
-	var products []catalog.Product
-	amount := shoppingCart.CalculateAmountOfGivenProducts(products)
-	expected := float64(0)
 
-	if amount != expected {
-		t.Errorf("Method should return %v. But found : %v", expected, amount)
-	}
 }
 
-func TestCalculateAmountOfGivenProducts(t *testing.T) {
+func TestCalculateCartTotalPriceWithoutDiscounts(t *testing.T) {
+	clearShoppingCart()
+	createSampleData()
 
+	price := shoppingCart.CalculateCartTotalPriceWithoutDiscounts()
+
+	expected := float64(7035)
+
+	if price != expected {
+		t.Errorf("Method should return %v. But found : %v", expected, price)
+	}
 }

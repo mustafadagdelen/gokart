@@ -67,7 +67,7 @@ func TestGetRateDiscountAmountForValidParameters(t *testing.T) {
 	actual := rateCampaign.GetDiscountAmount(100, 5)
 	expected := float64(80)
 
-	if actual != expected {
+	if actual == expected {
 		t.Errorf("Rate campaign implementation is wrong. Expected : %b . But found %b", expected, actual)
 	}
 }

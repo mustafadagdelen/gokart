@@ -57,3 +57,29 @@ func TestAmountCampaignApplyDiscountForInValidParameters(t *testing.T) {
 		t.Errorf("Amount campaign implementation is wrong")
 	}
 }
+
+func TestAmountCampaignGetDiscountAmountForValidParameters(t *testing.T) {
+	amountCampaign := AmountCampaign{MinProductQuantity: 3, Amount: 20, CampaignCode: "TEST-CAMPAIGN", FinishDate: time.Now().AddDate(0, 0, 40)}
+
+	totalCartAmount := float64(100)
+	totalCartItemCount := 5
+	discountAmount := amountCampaign.GetDiscountAmount(totalCartAmount, totalCartItemCount)
+	expected := float64(20)
+
+	if discountAmount != expected {
+		t.Errorf("Amount campaign get discount amount implementation is wrong")
+	}
+}
+
+func TestAmountCampaignGetDiscountAmountForInValidParameters(t *testing.T) {
+	amountCampaign := AmountCampaign{MinProductQuantity: 3, Amount: 20, CampaignCode: "TEST-CAMPAIGN", FinishDate: time.Now().AddDate(0, 0, 40)}
+
+	totalCartAmount := float64(100)
+	totalCartItemCount := 1
+	discountAmount := amountCampaign.GetDiscountAmount(totalCartAmount, totalCartItemCount)
+	expected := float64(0)
+
+	if discountAmount != expected {
+		t.Errorf("Amount campaign get discount amount implementation is wrong")
+	}
+}
