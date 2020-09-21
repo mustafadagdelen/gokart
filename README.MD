@@ -1,3 +1,1 @@
-Gokart shopping cart sample in golang
-
-Mustafa Dağdelen
+Gokart is a shopping cart sample in golang
