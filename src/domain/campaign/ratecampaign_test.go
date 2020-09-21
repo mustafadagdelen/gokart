@@ -82,3 +82,14 @@ func TestGetRateDiscountAmountForInValidParameters(t *testing.T) {
 		t.Errorf("Rate campaign implementation is wrong. Expected : %b . But found %b", expected, actual)
 	}
 }
+
+func TestRateCampaignGetCouponCode(t *testing.T) {
+	code := "TEST-CAMPAIGN"
+	rateCampaign := RateCampaign{MinProductQuantity: 3, Rate: 20, CampaignCode: code, FinishDate: time.Now().AddDate(0, 0, 30)}
+
+	r := rateCampaign.GetCampaignCode()
+
+	if r != code {
+		t.Error("Rate Campaign GetCampaignCode returned wrong result")
+	}
+}

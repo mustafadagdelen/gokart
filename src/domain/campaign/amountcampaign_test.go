@@ -83,3 +83,14 @@ func TestAmountCampaignGetDiscountAmountForInValidParameters(t *testing.T) {
 		t.Errorf("Amount campaign get discount amount implementation is wrong")
 	}
 }
+
+func TestAmountCampaignGetCouponCode(t *testing.T) {
+	code := "TEST-CAMPAIGN"
+	amountCampaign := AmountCampaign{MinProductQuantity: 3, Amount: 20, CampaignCode: code, FinishDate: time.Now().AddDate(0, 0, 40)}
+
+	r := amountCampaign.GetCampaignCode()
+
+	if r != code {
+		t.Error("Amount Campaign GetCampaignCode returned wrong result")
+	}
+}
