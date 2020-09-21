@@ -71,12 +71,6 @@ func (sc *ShoppingCart) FindCategoryProducts(category *catalog.Category) []catal
 		return nil
 	}
 
-	categories := sc.FindAllCategories()
-
-	if len(categories) <= 0 {
-		return nil
-	}
-
 	products := []catalog.Product{}
 
 	for key, _ := range sc.cartItems {
@@ -95,7 +89,7 @@ func (sc *ShoppingCart) GetCampaignDiscountAmount() float64 {
 
 	categories := sc.FindAllCategories()
 
-	var totalDiscountPrice float64
+	totalDiscountPrice := float64(0)
 
 	for _, category := range categories {
 		products := sc.FindCategoryProducts(category)
@@ -130,19 +124,27 @@ func (sc *ShoppingCart) CalculateAmountOfGivenProducts(products []catalog.Produc
 	return totalPrice
 }
 
-func (sc *ShoppingCart) GetCouponAppliedPrice() float64 {
+func (sc *ShoppingCart) CalculateCartTotalPriceWithoutDiscounts() float64 {
+	var totalPrice float64
+
+	for key, value := range sc.cartItems {
+		totalPrice += key.Price * float64(value)
+	}
+
+	return totalPrice
+}
+
+func (sc *ShoppingCart) GetCartAmount() float64 {
 	if len(sc.cartItems) <= 0 {
 		return float64(0)
 	}
 
-	if len(sc.coupons) <= 0 {
-		return float64(0)
-	}
+	price := sc.CalculateCartTotalPriceWithoutDiscounts() - sc.GetCampaignDiscountAmount()
 
-	price := sc.GetCampaignDiscountAmount()
-
-	for _, coupon := range sc.coupons {
-		price = coupon.ApplyDiscount(price)
+	if len(sc.coupons) > 0 {
+		for _, coupon := range sc.coupons {
+			price = coupon.ApplyDiscount(price)
+		}
 	}
 
 	return price
@@ -158,21 +160,7 @@ func (sc *ShoppingCart) FindTotalProductQuantity(products []catalog.Product) int
 		total += sc.cartItems[product]
 	}
 
-	return 0
-}
-
-func (sc *ShoppingCart) CalculateCartTotalPriceWithoutDiscounts() float64 {
-	var totalPrice float64
-
-	for key, value := range sc.cartItems {
-		totalPrice += key.Price * float64(value)
-	}
-
-	return totalPrice
-}
-
-func (sc *ShoppingCart) GetCartAmount() float64 {
-	return sc.CalculateCartTotalPriceWithoutDiscounts() - sc.GetCampaignDiscountAmount() - sc.GetCouponAppliedPrice()
+	return total
 }
 
 func (sc ShoppingCart) GetCartTotalProducts() int {

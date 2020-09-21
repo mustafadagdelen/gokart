@@ -10,7 +10,7 @@ func TestNewProduct(t *testing.T) {
 
 	product := NewProduct(title, price, category)
 
-	if product.Title != title || product.Price != price || product.Category.title != categoryTitle {
+	if product.Title != title || product.Price != price || product.Category.Title != categoryTitle {
 		t.Error("Error on Product.NewProduct")
 	}
 }

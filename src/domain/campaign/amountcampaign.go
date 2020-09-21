@@ -12,7 +12,7 @@ type AmountCampaign struct {
 }
 
 func (amountCampaign AmountCampaign) IsApplicable(productQuantity int) bool {
-	return productQuantity > amountCampaign.MinProductQuantity && amountCampaign.FinishDate.After(time.Now())
+	return productQuantity >= amountCampaign.MinProductQuantity && amountCampaign.FinishDate.After(time.Now())
 }
 
 func (amountCampaign AmountCampaign) ApplyDiscount(amount float64, productQuantity int) float64 {

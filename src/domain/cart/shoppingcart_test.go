@@ -97,10 +97,9 @@ func TestAddSameProductForQuantity(t *testing.T) {
 }
 
 func TestAddAmountCoupon(t *testing.T) {
-	clearShoppingCart()
 	createSampleData()
 	var (
-		amountCoupon = coupon.AmountCoupon{MinPurchaseAmount: 100, Amount: 20, CouponCode: "TEST-AMOUNT-COUPON", FinishDate: time.Now().AddDate(0, 0, 10)}
+		amountCoupon = coupon.AmountCoupon{MinPurchaseAmount: 100, Amount: 20, CouponCode: "TEST-AMOUNT-COUPON-5", FinishDate: time.Now().AddDate(0, 0, 10)}
 	)
 
 	result, err := shoppingCart.AddCoupon(amountCoupon)
@@ -117,7 +116,6 @@ func TestAddAmountCoupon(t *testing.T) {
 	}
 }
 func TestAddRateCoupon(t *testing.T) {
-	clearShoppingCart()
 	createSampleData()
 	var (
 		rateCoupon = coupon.RateCoupon{MinPurchaseAmount: 100, Rate: 20, CouponCode: "TEST-RATE-COUPON", FinishDate: time.Now().AddDate(0, 0, 10)}
@@ -138,7 +136,6 @@ func TestAddRateCoupon(t *testing.T) {
 }
 
 func TestAddMixedCoupon(t *testing.T) {
-	clearShoppingCart()
 	createSampleData()
 	var (
 		minPurchaseAmount = float64(100)
@@ -169,7 +166,6 @@ func TestAddMixedCoupon(t *testing.T) {
 	}
 }
 func TestAddSameCoupon(t *testing.T) {
-	clearShoppingCart()
 	createSampleData()
 	var (
 		minPurchaseAmount = float64(100)
@@ -259,8 +255,8 @@ func TestGetCartTotalProducts(t *testing.T) {
 }
 
 func TestFindAllCategories(t *testing.T) {
-	clearShoppingCart()
 	createSampleData()
+
 	categories := shoppingCart.FindAllCategories()
 
 	actual := len(categories)
@@ -272,6 +268,8 @@ func TestFindAllCategories(t *testing.T) {
 }
 
 func createSampleData() {
+	clearShoppingCart()
+
 	var (
 		schoolCategory    = catalog.NewCategory("School")
 		bookCategory      = catalog.NewCategory("Books")
@@ -280,8 +278,8 @@ func createSampleData() {
 
 		smartDeviceCategory = catalog.NewCategory("Smart Devices")
 		laptopCategory      = catalog.NewCategory("Laptop")
-		product2            = catalog.NewProduct("Lenovo ThinkPad ", 7000, laptopCategory)
-		amountCampaign      = campaign.AmountCampaign{MinProductQuantity: 1, Amount: 20, CampaignCode: "TEST-AMOUNT-CAMPAIGN", FinishDate: time.Now().AddDate(0, 0, 10)}
+
+		amountCampaign = campaign.AmountCampaign{MinProductQuantity: 1, Amount: 20, CampaignCode: "TEST-AMOUNT-CAMPAIGN", FinishDate: time.Now().AddDate(0, 0, 10)}
 
 		amountCoupon = coupon.AmountCoupon{MinPurchaseAmount: 100, Amount: 20, CouponCode: "TEST-COUPON", FinishDate: time.Now().AddDate(0, 0, 40)}
 	)
@@ -292,6 +290,7 @@ func createSampleData() {
 	laptopCategory.AddCampaign(amountCampaign)
 
 	product1 := catalog.NewProduct("Gulliver`s Travels", 35, storyBookCategory)
+	product2 := catalog.NewProduct("Lenovo ThinkPad ", 7000, laptopCategory)
 	shoppingCart.AddProduct(product1, quantity)
 	shoppingCart.AddProduct(product2, quantity)
 
@@ -369,11 +368,18 @@ func TestCalculateAmountOfGivenProducts(t *testing.T) {
 }
 
 func TestGetCampaignDiscountAmount(t *testing.T) {
+	createSampleData()
+
+	campaignAmount := shoppingCart.GetCampaignDiscountAmount()
+	expected := float64(20)
+
+	if campaignAmount != expected {
+		t.Errorf("GetCampaignDiscountAmount should return %v but found %v", expected, campaignAmount)
+	}
 
 }
 
 func TestCalculateCartTotalPriceWithoutDiscounts(t *testing.T) {
-	clearShoppingCart()
 	createSampleData()
 
 	price := shoppingCart.CalculateCartTotalPriceWithoutDiscounts()
@@ -382,5 +388,41 @@ func TestCalculateCartTotalPriceWithoutDiscounts(t *testing.T) {
 
 	if price != expected {
 		t.Errorf("Method should return %v. But found : %v", expected, price)
+	}
+}
+
+func TestGetCartAmount(t *testing.T) {
+	createSampleData()
+
+	cartAmount := shoppingCart.GetCartAmount()
+
+	expected := float64(6995)
+
+	if cartAmount != expected {
+		t.Errorf("CartAmount calculation is wrong. Expected %v but found %v", expected, cartAmount)
+	}
+}
+
+func TestFindTotalProductQuantity(t *testing.T) {
+	var (
+		storyBookCategory = catalog.NewCategory("Story Books")
+		laptopCategory    = catalog.NewCategory("Laptop")
+	)
+	product1 := catalog.NewProduct("Gulliver`s Travels", 35, storyBookCategory)
+	product2 := catalog.NewProduct("Lenovo ThinkPad ", 7000, laptopCategory)
+
+	shoppingCart.AddProduct(product1, 10)
+	shoppingCart.AddProduct(product2, 20)
+
+	products := []catalog.Product{}
+	products = append(products, product1)
+	products = append(products, product2)
+
+	totalCount := shoppingCart.FindTotalProductQuantity(products)
+
+	expected := 30
+
+	if expected != totalCount {
+		t.Errorf("FindTotalProductQuantity returned wrong value. Expected %v but found %v", expected, totalCount)
 	}
 }

@@ -12,7 +12,7 @@ func TestCategoryNew(t *testing.T) {
 
 	var category = NewCategory(categoryTitle)
 
-	if categoryTitle != category.title {
+	if categoryTitle != category.Title {
 		t.Errorf("Error on Category.New function.")
 	}
 }
@@ -23,7 +23,7 @@ func TestSetParentCategory(t *testing.T) {
 
 	noteBookCategory.SetParentCategory(stationeryCategory)
 
-	if noteBookCategory.parentCategory == nil || noteBookCategory.parentCategory.title != stationeryCategory.title {
+	if noteBookCategory.parentCategory == nil || noteBookCategory.parentCategory.Title != stationeryCategory.Title {
 		t.Errorf("Error on Category.SetParentCategory function.")
 	}
 }
@@ -124,7 +124,7 @@ func TestAddSameCampaign(t *testing.T) {
 	}
 }
 
-func TestGetParentCategories(t *testing.T) {
+func TestGetCategoryTree(t *testing.T) {
 	var (
 		wearCategory = NewCategory("Wear")
 		menCategory  = NewCategory("Men")

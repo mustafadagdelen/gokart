@@ -1,16 +1,18 @@
 package catalog
 
-import "gokart/domain/campaign"
+import (
+	"gokart/domain/campaign"
+)
 
 type Category struct {
-	title          string
+	Title          string
 	parentCategory *Category
 	campaigns      map[string]campaign.Campaign
 }
 
 func NewCategory(title string) *Category {
 	category := new(Category)
-	category.title = title
+	category.Title = title
 	category.campaigns = make(map[string]campaign.Campaign)
 	return category
 }

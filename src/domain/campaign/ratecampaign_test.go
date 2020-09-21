@@ -44,7 +44,6 @@ func TestRateCampaignApplyDiscountForValidParameters(t *testing.T) {
 	expected := float64(160)
 
 	if priceAfterDiscountApply != expected {
-		t.Logf("This test fails due to wrong data type of price...!")
 		t.Errorf("Rate campaign implementation is wrong for valid parameters. Expected %v. But found  %v", expected, priceAfterDiscountApply)
 	}
 }

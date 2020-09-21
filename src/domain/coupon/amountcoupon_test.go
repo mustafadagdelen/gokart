@@ -51,7 +51,7 @@ func TestAmountCouponApplyDiscountForValidParameters(t *testing.T) {
 func TestAmountCouponApplyDiscountForInValidParameters(t *testing.T) {
 	a := AmountCoupon{MinPurchaseAmount: 100, Amount: 20, CouponCode: "TEST-COUPON", FinishDate: time.Now().AddDate(0, 0, 40)}
 
-	totalCartAmount := float64(100)
+	totalCartAmount := float64(80)
 	priceAfterDiscountApply := a.ApplyDiscount(totalCartAmount)
 
 	if priceAfterDiscountApply != totalCartAmount {

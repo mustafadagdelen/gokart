@@ -10,7 +10,7 @@ type AmountCoupon struct {
 }
 
 func (amountCoupon AmountCoupon) IsApplicable(totalCartAmount float64) bool {
-	return totalCartAmount > amountCoupon.MinPurchaseAmount && amountCoupon.FinishDate.After(time.Now())
+	return totalCartAmount >= amountCoupon.MinPurchaseAmount && amountCoupon.FinishDate.After(time.Now())
 }
 
 func (amountCoupon AmountCoupon) ApplyDiscount(totalCartAmount float64) float64 {
