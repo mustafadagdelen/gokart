@@ -1,3 +1,3 @@
-Gokart sample e-commerce cart uygulaması
+Gokart shopping cart sample in golang
 
 Mustafa Dağdelen
